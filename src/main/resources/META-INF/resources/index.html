@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Calculator | Professional Tool</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-light: #e0e7ff;
+            --secondary: #3f37c9;
+            --dark: #1e1e24;
+            --light: #f8f9fa;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --gray: #6c757d;
+            --gray-light: #e9ecef;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f7ff;
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: var(--gray);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .calculator-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin: 0 auto;
+            max-width: 1200px;
+        }
+
+        .calculator-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            width: 48%;
+            min-width: 400px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .calculator-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .calculator-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .calculator-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            background-color: var(--primary-light);
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+
+        .calculator-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark);
+            font-size: 0.95rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--gray-light);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: var(--light);
+            color: var(--dark);
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        .input-field::placeholder {
+            color: #adb5bd;
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.875rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary:disabled {
+            background-color: var(--gray-light);
+            color: var(--gray);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-icon {
+            margin-right: 0.5rem;
+        }
+
+        .result-container {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 10px;
+            background-color: var(--primary-light);
+            display: none;
+        }
+
+        .result-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .result-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .error-message {
+            color: var(--warning);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 900px) {
+            .calculator-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .calculator-card {
+                width: 100%;
+                min-width: auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1.5rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <h1>Financial Calculator</h1>
+    <p>Professional tools for calculating interest rates and investment durations</p>
+</div>
+
+<div class="calculator-container">
+    <div class="calculator-card">
+        <div class="calculator-header">
+            <div class="calculator-icon">
+                <i class="fas fa-percentage"></i>
+            </div>
+            <h2 class="calculator-title">Interest Calculator</h2>
+        </div>
+
+        <div class="form-group">
+            <label for="price" class="form-label">Principal Amount (₹)</label>
+            <div class="input-wrapper">
+                <input type="number" id="price" class="input-field" placeholder="Enter principal amount in rupees" min="0" required>
+                <span class="input-icon">₹</span>
+            </div>
+            <div class="error-message" id="interestError"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="months" class="form-label">Term (Months)</label>
+            <div class="input-wrapper">
+                <input type="number" id="months" class="input-field" placeholder="Enter number of months" min="1" required>
+                <span class="input-icon"><i class="far fa-calendar-alt"></i></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="rate" class="form-label">Monthly Interest Rate (%)</label>
+            <div class="input-wrapper">
+                <input type="number" id="rate" class="input-field" placeholder="Enter interest rate" min="0" step="0.01" required>
+                <span class="input-icon"><i class="fas fa-chart-line"></i></span>
+            </div>
+        </div>
+
+        <button class="btn btn-primary" id="calculateInterestBtn" onclick="calculateInterest()">
+            <span class="btn-icon"><i class="fas fa-calculator"></i></span>
+            Calculate Interest
+        </button>
+
+        <div class="result-container" id="interestResult">
+            <div class="result-title">Total Interest</div>
+            <div class="result-value" id="interestValue"></div>
+        </div>
+    </div>
+
+    <div class="calculator-card">
+        <div class="calculator-header">
+            <div class="calculator-icon">
+                <i class="far fa-clock"></i>
+            </div>
+            <h2 class="calculator-title">Duration Calculator</h2>
+        </div>
+
+        <div class="form-group">
+            <label for="startDate" class="form-label">Start Date</label>
+            <div class="input-wrapper">
+                <input type="date" id="startDate" class="input-field" required>
+                <span class="input-icon" onclick="document.getElementById('startDate').showPicker()">
+            <i class="far fa-calendar"></i>
+        </span>
+            </div>
+        </div>
+
+        <!-- End Date -->
+        <div class="form-group">
+            <label for="endDate" class="form-label">End Date</label>
+            <div class="input-wrapper">
+                <input type="date" id="endDate" class="input-field" required>
+                <span class="input-icon" onclick="document.getElementById('endDate').showPicker()">
+            <i class="far fa-calendar-check"></i>
+        </span>
+            </div>
+            <div class="error-message" id="durationError" style="color: red; font-size: 0.9rem;"></div>
+        </div>
+
+        <button class="btn btn-primary" id="calculateDurationBtn" onclick="calculateDuration()">
+            <span class="btn-icon"><i class="fas fa-history"></i></span>
+            Calculate Duration
+        </button>
+
+        <div class="result-container" id="durationResult">
+            <div class="result-title">Duration</div>
+            <div class="result-value" id="durationValue"></div>
+        </div>
+    </div>
+</div>
+
+<div class="footer">
+    <p>© 2023 Financial Tools. All rights reserved.</p>
+</div>
+
+<script>
+    async function calculateInterest() {
+        const price = parseFloat(document.getElementById("price").value);
+        const months = parseInt(document.getElementById("months").value);
+        const rate = parseFloat(document.getElementById("rate").value);
+        const resultDiv = document.getElementById("interestResult");
+        const errorDiv = document.getElementById("interestError");
+        const interestValue = document.getElementById("interestValue");
+
+        // Clear previous results and errors
+        resultDiv.style.display = "none";
+        errorDiv.style.display = "none";
+        errorDiv.textContent = "";
+
+        // Validate inputs
+        if (!price || !months || !rate) {
+            errorDiv.textContent = "Please enter valid values.";
+            errorDiv.style.display = "block";
+            return;
+        }
+
+        const data = { price, months, rate };
+
+        try {
+            const response = await fetch("/api/rate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                interestValue.textContent = `₹${result.toLocaleString('en-IN')}`;
+                resultDiv.style.display = "block";
+            } else {
+                errorDiv.textContent = `Error: ${result.error || "Unknown error occurred"}`;
+                errorDiv.style.display = "block";
+            }
+        } catch (error) {
+            errorDiv.textContent = "Server error, please try again later.";
+            errorDiv.style.display = "block";
+            console.error("Error:", error);
+        }
+    }
+
+    async function calculateDuration() {
+        const startDate = document.getElementById("startDate").value;
+        const endDate = document.getElementById("endDate").value;
+        const resultDiv = document.getElementById("durationResult");
+        const errorDiv = document.getElementById("durationError");
+        const durationValue = document.getElementById("durationValue");
+
+        // Clear previous results and errors
+        resultDiv.style.display = "none";
+        errorDiv.style.display = "none";
+        errorDiv.textContent = "";
+
+        // Validate inputs
+        if (!startDate || !endDate) {
+            errorDiv.textContent = "Please select both dates.";
+            errorDiv.style.display = "block";
+            return;
+        }
+
+        if (new Date(startDate) > new Date(endDate)) {
+            errorDiv.textContent = "End date must be after start date.";
+            errorDiv.style.display = "block";
+            return;
+        }
+
+        const data = { startDate, endDate };
+
+        try {
+            const response = await fetch("/api/rate/duration", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                durationValue.textContent = `${result.months} months and ${result.days} days`;
+                resultDiv.style.display = "block";
+            } else {
+                errorDiv.textContent = `Error: ${result.error || "Unknown error occurred"}`;
+                errorDiv.style.display = "block";
+            }
+        } catch (error) {
+            errorDiv.textContent = "Server error, please try again later.";
+            errorDiv.style.display = "block";
+            console.error("Error:", error);
+        }
+    }
+</script>
+</body>
+</html>
